@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link th:href = "@{/css/bootstrap.min.css}" rel="stylesheet">
+    <script th:src="@{/js/code.jquery.com_jquery-3.7.0.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+
+    <title>Список заданий</title>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <header th:insert="blocks/header :: header"></header>
+    <div class="container">
+        <div class="mt-3 mb-3">
+            <a class="btn btn-success w-15" th:href="@{/create}">Добавить задание</a>
+        </div>
+        <div class="row mb-3">
+            <div class="col-auto"><a th:href="@{/}">Все</a></div>
+            <div class="col-auto"><a th:href="@{/done}">Выполненные</a></div>
+            <div class="col-auto"><a th:href="@{/new}">Новые</a></div>
+        </div>
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Состояние</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task: ${tasks}">
+                    <td><a th:text="${task.description}" th:href="@{/{id}(id=${task.id})}"></a></td>
+                    <td th:text="${task.created}"/>
+                    <td th:text="${task.done ? 'Выполнена' : 'Новая'}"/>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <footer th:insert="blocks/footer :: footer"></footer>
+</div>
+</body>
+</html>
