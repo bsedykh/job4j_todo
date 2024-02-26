@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
-import ru.job4j.todo.sevice.TaskService;
+import ru.job4j.todo.sevice.task.TaskService;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class TaskController {
         return "tasks/list";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public String get(Model model, @PathVariable int id,
                       @RequestParam(defaultValue = "false") String edit) {
         if (!List.of("true", "false").contains(edit)) {

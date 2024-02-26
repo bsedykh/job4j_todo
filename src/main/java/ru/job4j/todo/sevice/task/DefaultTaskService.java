@@ -1,9 +1,9 @@
-package ru.job4j.todo.sevice;
+package ru.job4j.todo.sevice.task;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.model.Task;
-import ru.job4j.todo.repository.TaskRepository;
+import ru.job4j.todo.repository.task.TaskRepository;
 
 import java.util.Collection;
 import java.util.Optional;
