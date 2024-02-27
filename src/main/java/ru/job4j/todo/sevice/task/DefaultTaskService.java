@@ -39,6 +39,11 @@ public class DefaultTaskService implements TaskService {
     }
 
     @Override
+    public boolean updateDone(int id, boolean done) {
+        return taskRepository.updateDone(id, done);
+    }
+
+    @Override
     public boolean deleteById(int id) {
         return taskRepository.deleteById(id);
     }

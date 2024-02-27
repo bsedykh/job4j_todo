@@ -66,14 +66,12 @@ public class TaskController {
 
     @GetMapping("/set-done/{id}")
     public String setDone(@PathVariable int id, Model model) {
-        var task = taskService.findById(id);
-        if (task.isEmpty()) {
+        if (!taskService.updateDone(id, true)) {
             model.addAttribute("message",
                     "Задача с указанным идентификатором не найдена");
             return "errors/404";
         }
-        task.get().setDone(true);
-        return update(model, task.get());
+        return "redirect:/";
     }
 
     @PostMapping("/update")

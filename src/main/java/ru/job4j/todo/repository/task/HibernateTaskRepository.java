@@ -48,14 +48,25 @@ public class HibernateTaskRepository implements TaskRepository {
                 .createQuery("""
                 UPDATE Task SET
                     description = :description,
-                    created = :created,
                     done = :done
                 WHERE id = :id
                 """)
                 .setParameter("description", task.getDescription())
-                .setParameter("created", task.getCreated())
                 .setParameter("done", task.isDone())
                 .setParameter("id", task.getId())
+                .executeUpdate() > 0);
+    }
+
+    @Override
+    public boolean updateDone(int id, boolean done) {
+        return utils.executeInTransaction(session -> session
+                .createQuery("""
+                UPDATE Task SET
+                    done = :done
+                WHERE id = :id
+                """)
+                .setParameter("done", done)
+                .setParameter("id", id)
                 .executeUpdate() > 0);
     }
 
