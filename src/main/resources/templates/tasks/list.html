@@ -28,6 +28,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Имя</th>
+                    <th scope="col">Пользователь</th>
                     <th scope="col">Дата создания</th>
                     <th scope="col">Состояние</th>
                 </tr>
@@ -35,6 +36,7 @@
                 <tbody>
                 <tr th:each="task: ${tasks}">
                     <td><a th:text="${task.description}" th:href="@{/{id}(id=${task.id})}"></a></td>
+                    <td th:text="${task.user.name}"/>
                     <td th:text="${#temporals.format(task.created, 'dd MMMM yyyy HH:mm')}"/>
                     <td th:text="${task.done ? 'Выполнена' : 'Новая'}"/>
                 </tr>
