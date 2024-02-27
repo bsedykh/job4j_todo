@@ -3,79 +3,65 @@ package ru.job4j.todo.repository.task;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
-import ru.job4j.todo.repository.RepositoryUtils;
+import ru.job4j.todo.repository.CrudRepository;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
 public class HibernateTaskRepository implements TaskRepository {
-    private final RepositoryUtils utils;
+    private final CrudRepository crudRepository;
 
     @Override
     public Collection<Task> findAll() {
-        return utils.executeInSession(session -> session
-                .createQuery("FROM Task", Task.class)
-                .list());
+        return crudRepository.query("FROM Task", Task.class);
     }
 
     @Override
     public Collection<Task> findByDone(boolean done) {
-        return utils.executeInSession(session -> session
-                .createQuery("FROM Task i WHERE i.done = :done", Task.class)
-                .setParameter("done", done)
-                .list());
+        return crudRepository.query("FROM Task i WHERE i.done = :done",
+                Task.class, Map.of("done", done));
     }
 
     @Override
     public Optional<Task> findById(int id) {
-        return utils.executeInSession(session -> session
-                .createQuery("FROM Task i WHERE i.id = :id", Task.class)
-                .setParameter("id", id)
-                .uniqueResultOptional());
+        return crudRepository.optional("FROM Task i WHERE i.id = :id",
+                Task.class, Map.of("id", id));
     }
 
     @Override
     public Task save(Task task) {
-        utils.executeInTransaction(session -> session.save(task));
+        crudRepository.run(session -> session.save(task));
         return task;
     }
 
     @Override
     public boolean update(Task task) {
-        return utils.executeInTransaction(session -> session
-                .createQuery("""
+        return crudRepository.run("""
                 UPDATE Task SET
                     description = :description,
                     done = :done
                 WHERE id = :id
-                """)
-                .setParameter("description", task.getDescription())
-                .setParameter("done", task.isDone())
-                .setParameter("id", task.getId())
-                .executeUpdate() > 0);
+                """,
+                Map.of("description", task.getDescription(),
+                        "done", task.isDone(),
+                        "id", task.getId())) > 0;
     }
 
     @Override
     public boolean updateDone(int id, boolean done) {
-        return utils.executeInTransaction(session -> session
-                .createQuery("""
+        return crudRepository.run("""
                 UPDATE Task SET
                     done = :done
                 WHERE id = :id
-                """)
-                .setParameter("done", done)
-                .setParameter("id", id)
-                .executeUpdate() > 0);
+                """, Map.of("done", done, "id", id)) > 0;
     }
 
     @Override
     public boolean deleteById(int id) {
-        return utils.executeInTransaction(session -> session
-                .createQuery(
-                        "DELETE Task WHERE id = :id")
-                .setParameter("id", id)
-                .executeUpdate()) > 0;
+        return crudRepository.run("DELETE Task WHERE id = :id",
+                Map.of("id", id)) > 0;
     }
 }
