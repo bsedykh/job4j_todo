@@ -16,19 +16,31 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("FROM Task", Task.class);
+        return crudRepository.query("""
+                FROM Task t
+                    JOIN FETCH t.priority
+                    JOIN FETCH t.user
+                """, Task.class);
     }
 
     @Override
     public Collection<Task> findByDone(boolean done) {
-        return crudRepository.query("FROM Task i WHERE i.done = :done",
-                Task.class, Map.of("done", done));
+        return crudRepository.query("""
+                FROM Task t
+                    JOIN FETCH t.priority
+                    JOIN FETCH t.user
+                WHERE t.done = :done
+                """, Task.class, Map.of("done", done));
     }
 
     @Override
     public Optional<Task> findById(int id) {
-        return crudRepository.optional("FROM Task i WHERE i.id = :id",
-                Task.class, Map.of("id", id));
+        return crudRepository.optional("""
+                FROM Task t
+                    JOIN FETCH t.priority
+                    JOIN FETCH t.user
+                WHERE t.id = :id
+                """, Task.class, Map.of("id", id));
     }
 
     @Override
@@ -44,10 +56,10 @@ public class HibernateTaskRepository implements TaskRepository {
                     description = :description,
                     done = :done
                 WHERE id = :id
-                """,
-                Map.of("description", task.getDescription(),
-                        "done", task.isDone(),
-                        "id", task.getId())) > 0;
+                """, Map.of(
+                "description", task.getDescription(),
+                "done", task.isDone(),
+                "id", task.getId())) > 0;
     }
 
     @Override

@@ -18,11 +18,15 @@ public class Task {
 
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "priority_id")
+    private Priority priority = Priority.DEFAULT;
+
     private LocalDateTime created = LocalDateTime.now();
 
     private boolean done;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

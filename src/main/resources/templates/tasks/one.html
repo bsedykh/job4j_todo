@@ -19,6 +19,9 @@
             <p th:text="${'Имя: ' + task.description}"></p>
         </div>
         <div class="mb-3">
+            <p th:text="${'Приоритет: ' + task.priority.name}"></p>
+        </div>
+        <div class="mb-3">
             <p th:text="${'Дата создания: ' + #temporals.format(task.created, 'dd MMMM yyyy HH:mm')}"></p>
         </div>
         <div class="mb-3">
