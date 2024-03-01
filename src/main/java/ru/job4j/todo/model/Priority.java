@@ -14,8 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "priorities")
 public class Priority {
-    public static final Priority DEFAULT = new Priority(1, "urgently", 1);
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include

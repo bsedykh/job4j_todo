@@ -6,15 +6,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.sevice.priority.PriorityService;
 import ru.job4j.todo.sevice.task.TaskService;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/")
 @AllArgsConstructor
 public class TaskController {
     private final TaskService taskService;
+
+    private final PriorityService priorityService;
 
     @GetMapping
     public String getAll(Model model) {
@@ -36,12 +37,7 @@ public class TaskController {
 
     @GetMapping("/{id:\\d+}")
     public String get(Model model, @PathVariable int id,
-                      @RequestParam(defaultValue = "false") String edit) {
-        if (!List.of("true", "false").contains(edit)) {
-            model.addAttribute("message",
-                    "Неверное значение параметра");
-            return "errors/404";
-        }
+                      @RequestParam(defaultValue = "false") boolean edit) {
         var task = taskService.findById(id);
         if (task.isEmpty()) {
             model.addAttribute("message",
@@ -49,11 +45,15 @@ public class TaskController {
             return "errors/404";
         }
         model.addAttribute("task", task.get());
-        return "false".equals(edit) ? "tasks/one" : "tasks/edit";
+        if (edit) {
+            model.addAttribute("priorities", priorityService.findAll());
+        }
+        return edit ? "tasks/edit" : "tasks/one";
     }
 
     @GetMapping("/create")
-    public String create() {
+    public String create(Model model) {
+        model.addAttribute("priorities", priorityService.findAll());
         return "tasks/create";
     }
 

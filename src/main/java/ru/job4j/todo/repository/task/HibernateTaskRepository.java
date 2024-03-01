@@ -54,11 +54,11 @@ public class HibernateTaskRepository implements TaskRepository {
         return crudRepository.run("""
                 UPDATE Task SET
                     description = :description,
-                    done = :done
+                    priority = :priority
                 WHERE id = :id
                 """, Map.of(
                 "description", task.getDescription(),
-                "done", task.isDone(),
+                "priority", task.getPriority(),
                 "id", task.getId())) > 0;
     }
 
