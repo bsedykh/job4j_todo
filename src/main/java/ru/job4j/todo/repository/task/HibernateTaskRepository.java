@@ -6,6 +6,7 @@ import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.CrudRepository;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,21 +17,27 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("""
-                FROM Task t
-                    JOIN FETCH t.priority
-                    JOIN FETCH t.user
-                """, Task.class);
+        return new LinkedHashSet<>(
+                crudRepository.query("""
+                        FROM Task t
+                            JOIN FETCH t.priority
+                            JOIN FETCH t.user
+                            JOIN FETCH t.categories
+                        """, Task.class)
+        );
     }
 
     @Override
     public Collection<Task> findByDone(boolean done) {
-        return crudRepository.query("""
-                FROM Task t
-                    JOIN FETCH t.priority
-                    JOIN FETCH t.user
-                WHERE t.done = :done
-                """, Task.class, Map.of("done", done));
+        return new LinkedHashSet<>(
+                crudRepository.query("""
+                        FROM Task t
+                            JOIN FETCH t.priority
+                            JOIN FETCH t.user
+                            JOIN FETCH t.categories
+                        WHERE t.done = :done
+                        """, Task.class, Map.of("done", done))
+        );
     }
 
     @Override
@@ -39,6 +46,7 @@ public class HibernateTaskRepository implements TaskRepository {
                 FROM Task t
                     JOIN FETCH t.priority
                     JOIN FETCH t.user
+                    JOIN FETCH t.categories
                 WHERE t.id = :id
                 """, Task.class, Map.of("id", id));
     }

@@ -22,6 +22,9 @@
             <p th:text="${'Приоритет: ' + task.priority.name}"></p>
         </div>
         <div class="mb-3">
+            <p th:text="${'Категории: ' + #strings.listJoin(task.categories.![name], ', ')}"></p>
+        </div>
+        <div class="mb-3">
             <p th:text="${'Дата создания: ' + #temporals.format(task.created, 'dd MMMM yyyy HH:mm')}"></p>
         </div>
         <div class="mb-3">
