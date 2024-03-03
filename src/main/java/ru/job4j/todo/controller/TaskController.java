@@ -23,27 +23,28 @@ public class TaskController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("tasks", taskService.findAll());
+    public String getAll(Model model, @SessionAttribute User user) {
+        model.addAttribute("tasks", taskService.findAll(user));
         return "tasks/list";
     }
 
     @GetMapping("/new")
-    public String getNew(Model model) {
-        model.addAttribute("tasks", taskService.findByDone(false));
+    public String getNew(Model model, @SessionAttribute User user) {
+        model.addAttribute("tasks", taskService.findByDone(false, user));
         return "tasks/list";
     }
 
     @GetMapping("/done")
-    public String getDone(Model model) {
-        model.addAttribute("tasks", taskService.findByDone(true));
+    public String getDone(Model model, @SessionAttribute User user) {
+        model.addAttribute("tasks", taskService.findByDone(true, user));
         return "tasks/list";
     }
 
     @GetMapping("/{id:\\d+}")
     public String get(Model model, @PathVariable int id,
-                      @RequestParam(defaultValue = "false") boolean edit) {
-        var task = taskService.findById(id);
+                      @RequestParam(defaultValue = "false") boolean edit,
+                      @SessionAttribute User user) {
+        var task = taskService.findById(id, user);
         if (task.isEmpty()) {
             model.addAttribute("message",
                     "Задача с указанным идентификатором не найдена");

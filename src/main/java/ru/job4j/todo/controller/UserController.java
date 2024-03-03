@@ -10,6 +10,7 @@ import ru.job4j.todo.model.User;
 import ru.job4j.todo.sevice.user.UserService;
 
 import javax.servlet.http.HttpSession;
+import java.util.TimeZone;
 
 @Controller
 @RequestMapping("/users")
@@ -21,7 +22,8 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String getRegistrationPage() {
+    public String getRegistrationPage(Model model) {
+        model.addAttribute("timezones", TimeZone.getAvailableIDs());
         return "users/register";
     }
 
@@ -31,6 +33,7 @@ public class UserController {
         if (savedUser.isEmpty()) {
             model.addAttribute("error",
                     "Пользователь с таким логином уже существует");
+            model.addAttribute("timezones", TimeZone.getAvailableIDs());
             return "users/register";
         }
         return "redirect:/users/login";
